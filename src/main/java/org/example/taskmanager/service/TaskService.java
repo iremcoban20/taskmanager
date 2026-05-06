@@ -1,5 +1,6 @@
 package org.example.taskmanager.service;
 
+import org.example.taskmanager.dto.TaskRequest;
 import org.example.taskmanager.entity.Task;
 import org.example.taskmanager.repository.TaskRepository;
 import org.springframework.stereotype.Service;
@@ -17,31 +18,42 @@ public class TaskService {
     }
 
     public List<Task> getAllTasks() {
-
-        return taskRepository.findAll();//select * from sorgusunun kod karşılığıdır.
+        return taskRepository.findAll();
     }
 
     public Optional<Task> getTaskById(Long id) {
-        return taskRepository.findById(id);//spesifik görevi bulmaya yarar(id).select * from where id sorgusunun metodu
+        return taskRepository.findById(id);
     }
 
-    public Task createTask(Task task) {
-        return taskRepository.save(task);}
-    //eğer id yoksa id ekler varsa bilgi güncellemesi yapar.ekleme ve güncelleme yapar
+    public Task createTask(TaskRequest taskRequest) {
+        Task task = new Task();
 
-    public Task updateTask(Long id, Task updatedTask) {
-        Optional<Task> optionalTask = taskRepository.findById(id);//eski görevi çekiyorsun sonra update ile postman den
-        // gelen yeni bilgilerle eski bilgileri değiştiriyorum.
+        task.setTitle(taskRequest.getTitle());
+        task.setDescription(taskRequest.getDescription());
 
-        if (optionalTask.isPresent()) {//görevin bulunup bulunmadığını kontrol eder.
-            //existingtask zaten varolan veridir.bu kodlarda eski veri yeni
-            //veriyle yer değiştirir.
+        if (taskRequest.getCompleted() != null) {
+            task.setCompleted(taskRequest.getCompleted());
+        } else {
+            task.setCompleted(false);
+        }
+
+        return taskRepository.save(task);
+    }
+
+    public Task updateTask(Long id, TaskRequest taskRequest) {
+        Optional<Task> optionalTask = taskRepository.findById(id);
+
+        if (optionalTask.isPresent()) {
             Task existingTask = optionalTask.get();
-            existingTask.setTitle(updatedTask.getTitle());
-            existingTask.setDescription(updatedTask.getDescription());
-            existingTask.setCompleted(updatedTask.isCompleted());//görevin tamamlamıp tamamlanmadığı bilgisini kontrol
-            //eder
-            return taskRepository.save(existingTask);//değişiklik yapılan nesne tekrar veritabanına gönderilir
+
+            existingTask.setTitle(taskRequest.getTitle());
+            existingTask.setDescription(taskRequest.getDescription());
+
+            if (taskRequest.getCompleted() != null) {
+                existingTask.setCompleted(taskRequest.getCompleted());
+            }
+
+            return taskRepository.save(existingTask);
         }
 
         return null;
