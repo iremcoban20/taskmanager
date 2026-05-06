@@ -17,26 +17,31 @@ public class TaskService {
     }
 
     public List<Task> getAllTasks() {
-        return taskRepository.findAll();
+
+        return taskRepository.findAll();//select * from sorgusunun kod karşılığıdır.
     }
 
     public Optional<Task> getTaskById(Long id) {
-        return taskRepository.findById(id);
+        return taskRepository.findById(id);//spesifik görevi bulmaya yarar(id).select * from where id sorgusunun metodu
     }
 
     public Task createTask(Task task) {
-        return taskRepository.save(task);
-    }
+        return taskRepository.save(task);}
+    //eğer id yoksa id ekler varsa bilgi güncellemesi yapar.ekleme ve güncelleme yapar
 
     public Task updateTask(Long id, Task updatedTask) {
-        Optional<Task> optionalTask = taskRepository.findById(id);
+        Optional<Task> optionalTask = taskRepository.findById(id);//eski görevi çekiyorsun sonra update ile postman den
+        // gelen yeni bilgilerle eski bilgileri değiştiriyorum.
 
-        if (optionalTask.isPresent()) {
+        if (optionalTask.isPresent()) {//görevin bulunup bulunmadığını kontrol eder.
+            //existingtask zaten varolan veridir.bu kodlarda eski veri yeni
+            //veriyle yer değiştirir.
             Task existingTask = optionalTask.get();
             existingTask.setTitle(updatedTask.getTitle());
             existingTask.setDescription(updatedTask.getDescription());
-            existingTask.setCompleted(updatedTask.isCompleted());
-            return taskRepository.save(existingTask);
+            existingTask.setCompleted(updatedTask.isCompleted());//görevin tamamlamıp tamamlanmadığı bilgisini kontrol
+            //eder
+            return taskRepository.save(existingTask);//değişiklik yapılan nesne tekrar veritabanına gönderilir
         }
 
         return null;

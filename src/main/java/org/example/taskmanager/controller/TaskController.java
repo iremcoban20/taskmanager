@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/tasks")
+@RestController//java dilini ortak bir dile yani JSON a çevirir
+@RequestMapping("/tasks")//yönlendirici görevi görüyor.
 public class TaskController {
 
     private final TaskService taskService;
